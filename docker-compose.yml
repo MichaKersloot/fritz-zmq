@@ -1,0 +1,28 @@
+services:
+  fritz-zmq:
+    image: fritz-zmq:latest
+    container_name: fritz-zmq
+    restart: unless-stopped
+    environment:
+      - FRITZBOX_IP=192.168.178.1
+      - FRITZBOX_USERNAME=admin
+      - FRITZBOX_PASSWORD=
+      - FRITZBOX_INTERFACE=3-0
+      - DEBUG_FLOWS=false
+      
+  ntopng:
+    image: ntop/ntopng:latest
+    container_name: ntopng
+    restart: unless-stopped
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ntopng_data:/var/lib/ntopng
+      - ntopng_redis:/var/lib/redis
+      - ntopng_config:/etc/ntopng
+    command: -i zmq://fritz-zmq:5556 -d /var/lib/ntopng --dns-mode 1 --community -U root --local-networks 192.168.178.0/24
+
+volumes:
+  ntopng_data:
+  ntopng_redis:
+  ntopng_config:
