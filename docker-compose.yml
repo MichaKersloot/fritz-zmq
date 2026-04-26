@@ -2,6 +2,7 @@ services:
   fritz-zmq:
     image: fritz-zmq:latest
     container_name: fritz-zmq
+    build: .
     restart: unless-stopped
     environment:
       - FRITZBOX_IP=192.168.178.1
